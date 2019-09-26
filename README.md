@@ -38,7 +38,26 @@ The `errors` array will contain a list of all error messages, each with a `path`
 
 ## Example
 
-TODO
+Object schema with different property types, some of which are optional / allow nulls:
+
+    interface Schema {
+      readonly a: string;
+      readonly b: number | null;
+      readonly c?: number;
+    }
+
+    const schema = ObjectParser({
+      a: StringParser(),
+      b: NumberParser({ nullable: true }),
+      c: NumberParser({ optional: true })
+    });
+
+    // Mismatch between validation schema and type schema will show as a compile time type error here...
+    const answer: Schema = assertValid(schema, {
+      a: 'foo',
+      b: null,
+      c: undefined
+    });
 
 ## Notes
 
