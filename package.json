@@ -1,5 +1,5 @@
 {
-  "name": "ts-valid",
+  "name": "type-safe-validator",
   "version": "1.0.14",
   "description": "A validation library designed to take full advantage of the TypeScript type system. All return types are inferred directly from the schema.",
   "main": "build/main/index.js",
@@ -39,7 +39,7 @@
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
     "prepare-release": "run-s reset test cov:check doc:html version doc:publish",
-    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('ts-valid must be installed with Yarn: https://yarnpkg.com/')\""
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('type-safe-validator must be installed with Yarn: https://yarnpkg.com/')\""
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
