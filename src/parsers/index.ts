@@ -1,4 +1,5 @@
 export { ArrayParser } from './array';
+export { BooleanParser } from './boolean';
 export * from './common';
 export { Parser } from './common';
 export { CustomParser } from './custom';
