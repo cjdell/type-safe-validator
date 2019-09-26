@@ -59,6 +59,12 @@ Object schema with different property types, some of which are optional / allow 
       c: undefined
     });
 
+## Inferring a type from the schema
+
+    const thing: ParserReturn<typeof schema> = {
+      ...
+    };
+
 ## Notes
 
 This library is a work in progress however I am already using it in two major projects. Feedback is welcome.

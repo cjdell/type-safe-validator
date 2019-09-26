@@ -41,3 +41,9 @@ function getPathName(path: ParserPath): string {
 
   return path.join(' > ');
 }
+
+export type ParserReturn<TParser extends Parser<any>> = TParser extends Parser<
+  infer T
+>
+  ? T
+  : never;

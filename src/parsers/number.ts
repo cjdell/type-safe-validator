@@ -7,9 +7,11 @@ import {
   ValidationFail
 } from './common';
 
-export const NumberParser = <
-  TOptions extends StandardOptions & { readonly allowNumeric?: boolean }
->(
+interface NumberOptions extends StandardOptions {
+  readonly allowNumeric?: boolean;
+}
+
+export const NumberParser = <TOptions extends NumberOptions>(
   options?: TOptions
 ) => (
   inp: ParserInput
@@ -21,25 +23,10 @@ export const NumberParser = <
   }
 
   if (typeof inp.value !== 'number') {
-    if (typeof inp.value === 'string' && options && options.allowNumeric) {
-      const parsed = parseFloat(inp.value);
+    const nonNumberResult = handleNonNumber(inp, options);
 
-      if (!isNaN(parsed)) {
-        return {
-          value: parsed,
-          errors: []
-        };
-      } else {
-        return {
-          value: ValidationFail,
-          errors: [
-            {
-              path: inp.path,
-              message: `Value "${inp.value}" is not numeric`
-            }
-          ]
-        };
-      }
+    if (nonNumberResult) {
+      return nonNumberResult;
     }
 
     return {
@@ -57,4 +44,46 @@ export const NumberParser = <
     value: inp.value,
     errors: []
   };
+};
+
+const handleNonNumber = (
+  inp: ParserInput,
+  options?: NumberOptions
+): ParserResult<any> | null => {
+  if (typeof inp.value === 'string' && options && options.allowNumeric) {
+    if (inp.value === '' && options.optional) {
+      return {
+        value: undefined,
+        errors: []
+      };
+    }
+
+    if (inp.value === 'null' && options.nullable) {
+      return {
+        value: null,
+        errors: []
+      };
+    }
+
+    const parsed = parseFloat(inp.value);
+
+    if (!isNaN(parsed)) {
+      return {
+        value: parsed,
+        errors: []
+      };
+    } else {
+      return {
+        value: ValidationFail,
+        errors: [
+          {
+            path: inp.path,
+            message: `Value "${inp.value}" is not numeric`
+          }
+        ]
+      };
+    }
+  }
+
+  return null;
 };
