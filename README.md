@@ -59,6 +59,8 @@ Object schema with different property types, some of which are optional / allow 
       c: undefined
     });
 
+Please see `index.spec.ts` for more examples.
+
 ## Inferring a type from the schema
 
     const thing: ParserReturn<typeof schema> = {
