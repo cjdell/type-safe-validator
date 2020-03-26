@@ -4,6 +4,7 @@ export * from './common';
 export { Parser } from './common';
 export { CustomParser } from './custom';
 export { LiteralParser } from './literal';
+export { ModifierParser } from './modifier';
 export { NumberParser } from './number';
 export { ObjectParser } from './object';
 export { StringParser } from './string';

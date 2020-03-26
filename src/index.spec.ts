@@ -10,7 +10,8 @@ import {
   ArrayParser,
   BooleanParser,
   StringParser,
-  UnionParser
+  UnionParser,
+  ModifierParser
 } from './parsers';
 import { deepEqual } from './test';
 

@@ -27,12 +27,8 @@ export interface StandardOptions {
 }
 
 export type StandardOptionsReturn<TOptions extends StandardOptions> =
-  | never
-  | TOptions['nullable'] extends true
-  ? null
-  : never | TOptions['optional'] extends true
-  ? undefined
-  : never;
+  | (TOptions['nullable'] extends true ? null : never)
+  | (TOptions['optional'] extends true ? undefined : never);
 
 export function checkEmpty(
   inp: ParserInput,
