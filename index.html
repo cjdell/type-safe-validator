@@ -1,0 +1,279 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>type-safe-validator</title>
+	<meta name="description" content="Documentation for type-safe-validator">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">type-safe-validator</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>type-safe-validator</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#type-safe-validator" id="type-safe-validator" style="color: inherit; text-decoration: none;">
+					<h1>type-safe-validator</h1>
+				</a>
+				<p>A validation library designed to take full advantage of the TypeScript type system. All return types are inferred directly from the schema.</p>
+				<a href="#motivation" id="motivation" style="color: inherit; text-decoration: none;">
+					<h2>Motivation</h2>
+				</a>
+				<p>I wanted a library that would guarantee that my validation schema will always fully comply with my TypeScript interfaces. As far I as know, such a library did not exist.</p>
+				<p>This library aims to completely stop runtime errors by ensuring that a compiled TypeScript program can never mistakenly receive an invalid object from sources such a REST API.</p>
+				<a href="#benefits" id="benefits" style="color: inherit; text-decoration: none;">
+					<h2>Benefits</h2>
+				</a>
+				<ul>
+					<li>Less bugs. No disparity between the schema and the interface your code compiles.</li>
+					<li>If an object successfully makes its way into your domain, it is guaranteed to be in the correct shape.</li>
+					<li>Explicit checks for <code>null</code> and <code>undefined</code>.</li>
+					<li>Infinitely nestable schemas for Objects, Tuples, Arrays, Records and Union types.</li>
+					<li>Supports literal types.</li>
+					<li>Direct support custom parsers and &quot;Opaque&quot; types (see <code>ts-essentials</code> module).</li>
+					<li>All excess properties are trimmed and a deep copy is returned. The original object is untouched.</li>
+				</ul>
+				<a href="#usage-modes" id="usage-modes" style="color: inherit; text-decoration: none;">
+					<h2>Usage modes</h2>
+				</a>
+				<p>Two primary usages depending on preference:</p>
+				<p>Use <code>assertValid</code> to get a validated object, or throw if there is an error:</p>
+				<pre><code>const answer = <span class="hljs-keyword">assert</span><span class="hljs-constructor">Valid(<span class="hljs-params">schema</span>, <span class="hljs-params">input</span>)</span>;</code></pre><p>Use <code>getValid</code> to get a tuple which contains a valid object result, or detailed failure information:</p>
+				<pre><code>const <span class="hljs-literal">[<span class="hljs-identifier">answer</span>, <span class="hljs-identifier">errors</span>]</span> = get<span class="hljs-constructor">Valid(<span class="hljs-params">schema</span>, <span class="hljs-params">input</span>)</span>;
+
+<span class="hljs-keyword">if</span> (answer !== ValidationFail) {
+  <span class="hljs-comment">// Use answer</span>
+}</code></pre><p>The <code>errors</code> array will contain a list of all error messages, each with a <code>path</code> property, and a human readable <code>message</code> string.</p>
+				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+					<h2>Example</h2>
+				</a>
+				<p>Object schema with different property types, some of which are optional / allow nulls:</p>
+				<pre><code><span class="hljs-string">interface</span> <span class="hljs-string">Schema</span> {
+  <span class="hljs-attr">readonly a:</span> <span class="hljs-string">string;</span>
+  <span class="hljs-attr">readonly b:</span> <span class="hljs-string">number</span> <span class="hljs-string">|</span> <span class="hljs-literal">null</span><span class="hljs-string">;</span>
+  <span class="hljs-string">readonly</span> <span class="hljs-string">c?:</span> <span class="hljs-string">number;</span>
+}
+
+<span class="hljs-string">const</span> <span class="hljs-string">schema</span> <span class="hljs-string">=</span> <span class="hljs-string">ObjectParser({</span>
+  <span class="hljs-attr">a:</span> <span class="hljs-string">StringParser(),</span>
+  <span class="hljs-attr">b:</span> <span class="hljs-string">NumberParser({</span> <span class="hljs-attr">nullable:</span> <span class="hljs-literal">true</span> <span class="hljs-string">}),</span>
+  <span class="hljs-attr">c:</span> <span class="hljs-string">NumberParser({</span> <span class="hljs-attr">optional:</span> <span class="hljs-literal">true</span> <span class="hljs-string">})</span>
+<span class="hljs-string">});</span>
+
+<span class="hljs-string">//</span> <span class="hljs-string">Mismatch</span> <span class="hljs-string">between</span> <span class="hljs-string">validation</span> <span class="hljs-string">schema</span> <span class="hljs-string">and</span> <span class="hljs-string">type</span> <span class="hljs-string">schema</span> <span class="hljs-string">will</span> <span class="hljs-string">show</span> <span class="hljs-string">as</span> <span class="hljs-string">a</span> <span class="hljs-string">compile</span> <span class="hljs-string">time</span> <span class="hljs-string">type</span> <span class="hljs-string">error</span> <span class="hljs-string">here...</span>
+<span class="hljs-attr">const answer:</span> <span class="hljs-string">Schema</span> <span class="hljs-string">=</span> <span class="hljs-string">assertValid(schema,</span> {
+  <span class="hljs-attr">a:</span> <span class="hljs-string">&#x27;foo&#x27;</span>,
+  <span class="hljs-attr">b:</span> <span class="hljs-literal">null</span>,
+  <span class="hljs-attr">c:</span> <span class="hljs-string">undefined</span>
+}<span class="hljs-string">);</span></code></pre><p>Please see <code>index.spec.ts</code> for more examples.</p>
+				<a href="#inferring-a-type-from-the-schema" id="inferring-a-type-from-the-schema" style="color: inherit; text-decoration: none;">
+					<h2>Inferring a type from the schema</h2>
+				</a>
+				<pre><code><span class="hljs-keyword">const</span> thing: ParserReturn&lt;<span class="hljs-keyword">typeof</span> schema&gt; = {
+  ...
+};</code></pre>
+				<a href="#notes" id="notes" style="color: inherit; text-decoration: none;">
+					<h2>Notes</h2>
+				</a>
+				<p>This library is a work in progress however I am already using it in two major projects. Feedback is welcome.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/numberoptions.html" class="tsd-kind-icon">Number<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/parserinput.html" class="tsd-kind-icon">Parser<wbr>Input</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/parserresult.html" class="tsd-kind-icon">Parser<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/standardoptions.html" class="tsd-kind-icon">Standard<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/stringoptions.html" class="tsd-kind-icon">String<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/unionoptions.html" class="tsd-kind-icon">Union<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/validationerror.html" class="tsd-kind-icon">Validation<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#arrayelementtype" class="tsd-kind-icon">Array<wbr>Element<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#objectschematovalue" class="tsd-kind-icon">Object<wbr>Schema<wbr>ToValue</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#parser" class="tsd-kind-icon">Parser</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#parserpath" class="tsd-kind-icon">Parser<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#parserreturn" class="tsd-kind-icon">Parser<wbr>Return</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#person" class="tsd-kind-icon">Person</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#standardoptionsreturn" class="tsd-kind-icon">Standard<wbr>Options<wbr>Return</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#tupleschematovalue" class="tsd-kind-icon">Tuple<wbr>Schema<wbr>ToValue</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#unionschematovalue" class="tsd-kind-icon">Union<wbr>Schema<wbr>ToValue</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#validationfail" class="tsd-kind-icon">Validation<wbr>Fail</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#personschema" class="tsd-kind-icon">Person<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#validationfail" class="tsd-kind-icon">Validation<wbr>Fail</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#result" class="tsd-kind-icon">result</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#arrayparser" class="tsd-kind-icon">Array<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#booleanparser" class="tsd-kind-icon">Boolean<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#customparser" class="tsd-kind-icon">Custom<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#literalparser" class="tsd-kind-icon">Literal<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#modifierparser" class="tsd-kind-icon">Modifier<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#numberparser" class="tsd-kind-icon">Number<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#objectparser" class="tsd-kind-icon">Object<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#recordparser" class="tsd-kind-icon">Record<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#stringparser" class="tsd-kind-icon">String<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#tupleparser" class="tsd-kind-icon">Tuple<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#unionparser" class="tsd-kind-icon">Union<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#assertvalid" class="tsd-kind-icon">assert<wbr>Valid</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#checkempty" class="tsd-kind-icon">check<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#deepequal" class="tsd-kind-icon">deep<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#flatten" class="tsd-kind-icon">flatten</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getpathname" class="tsd-kind-icon">get<wbr>Path<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#getvalid" class="tsd-kind-icon">get<wbr>Valid</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#handlenonnumber" class="tsd-kind-icon">handle<wbr>Non<wbr>Number</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
