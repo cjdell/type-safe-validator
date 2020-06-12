@@ -15,11 +15,13 @@ export const LiteralParser = <
   options?: TOptions
 ) => (
   inp: ParserInput
-): ParserResult<TLiteralType | StandardOptionsReturn<TOptions>> => {
+): ParserResult<TLiteralType | StandardOptionsReturn<TOptions>> & {
+  readonly literals: readonly TLiteralType[];
+} => {
   const emptyResult = checkEmpty(inp, options);
 
   if (emptyResult) {
-    return emptyResult;
+    return { ...emptyResult, literals };
   }
 
   if (literals.indexOf(inp.value) === -1) {
@@ -32,12 +34,14 @@ export const LiteralParser = <
             .map(l => `"${l}"`)
             .join(',')})`
         }
-      ]
+      ],
+      literals
     };
   }
 
   return {
     errors: [],
-    value: inp.value
+    value: inp.value,
+    literals
   };
 };

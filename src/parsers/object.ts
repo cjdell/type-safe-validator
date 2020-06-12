@@ -19,11 +19,11 @@ export const ObjectParser = <
   inp: ParserInput
 ): ParserResult<
   ObjectSchemaToValue<TSchema> | StandardOptionsReturn<TOptions>
-> => {
+> & { readonly schema: TSchema } => {
   const emptyResult = checkEmpty(inp, options);
 
   if (emptyResult) {
-    return emptyResult;
+    return { ...emptyResult, schema };
   }
 
   if (typeof inp.value !== 'object') {
@@ -34,7 +34,8 @@ export const ObjectParser = <
           path: inp.path,
           message: 'Value is not an object'
         }
-      ]
+      ],
+      schema
     };
   }
 
@@ -58,12 +59,14 @@ export const ObjectParser = <
   if (hasErrors) {
     return {
       value: ValidationFail,
-      errors
+      errors,
+      schema
     };
   } else {
     return {
       value: ret,
-      errors: []
+      errors: [],
+      schema
     };
   }
 };

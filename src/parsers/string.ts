@@ -4,10 +4,18 @@ import {
   ParserResult,
   StandardOptions,
   StandardOptionsReturn,
+  ValidationError,
   ValidationFail
 } from './common';
 
-export const StringParser = <TOptions extends StandardOptions>(
+interface StringOptions extends StandardOptions {
+  readonly allowNumeric?: boolean;
+  readonly minLength?: number;
+  readonly maxLength?: number;
+  readonly regExp?: RegExp;
+}
+
+export const StringParser = <TOptions extends StringOptions>(
   options?: TOptions
 ) => (
   inp: ParserInput
@@ -27,6 +35,44 @@ export const StringParser = <TOptions extends StandardOptions>(
           message: `Value "${inp.value}" is not a string`
         }
       ]
+    };
+  }
+
+  const errors: ValidationError[] = [];
+
+  if (options) {
+    if (typeof options.minLength === 'number') {
+      if (inp.value.length < options.minLength) {
+        errors.push({
+          path: inp.path,
+          message: `Value "${inp.value}" must be a least ${options.minLength} characters`
+        });
+      }
+    }
+
+    if (typeof options.maxLength === 'number') {
+      if (inp.value.length > options.maxLength) {
+        errors.push({
+          path: inp.path,
+          message: `Value "${inp.value}" must be at most ${options.maxLength} characters`
+        });
+      }
+    }
+
+    if (options.regExp) {
+      if (!options.regExp.test(inp.value)) {
+        errors.push({
+          path: inp.path,
+          message: `Value "${inp.value}" must be at most ${options.maxLength} characters`
+        });
+      }
+    }
+  }
+
+  if (errors.length) {
+    return {
+      value: ValidationFail,
+      errors
     };
   }
 

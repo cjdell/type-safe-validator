@@ -9,9 +9,13 @@ import {
   ValidationFail
 } from './common';
 
+interface UnionOptions extends StandardOptions {
+  readonly key?: string;
+}
+
 export const UnionParser = <
   TSchema extends ReadonlyArray<Parser<any>>,
-  TOptions extends StandardOptions
+  TOptions extends UnionOptions
 >(
   schema: TSchema,
   options?: TOptions
@@ -34,7 +38,34 @@ export const UnionParser = <
       return parserResult;
     }
 
-    errors.push(...parserResult.errors);
+    const key = options && options.key;
+
+    if (key) {
+      const objectKeyValue = inp.value[key];
+
+      const objectSchema = (parserResult as any).schema;
+
+      if (objectSchema[key]) {
+        const literalParser: Parser<any> = objectSchema[key];
+
+        const literalResult = literalParser({
+          path: [],
+          value: objectKeyValue
+        });
+
+        const literals: any[] = (literalResult as any).literals;
+
+        if (literals && literals.length === 1) {
+          const keyProp = literals[0];
+
+          if (objectKeyValue === keyProp) {
+            errors.push(...parserResult.errors);
+          }
+        }
+      }
+    } else {
+      errors.push(...parserResult.errors);
+    }
   }
 
   return {
