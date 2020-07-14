@@ -14,12 +14,36 @@ export const ObjectParser = <
   TOptions extends StandardOptions
 >(
   schema: TSchema,
-  options?: TOptions
+  options?: TOptions,
+  intercept?: (
+    inp: ParserInput<ObjectSchemaToValue<TSchema>>
+  ) => ObjectSchemaToValue<TSchema>
 ) => (
   inp: ParserInput
 ): ParserResult<
   ObjectSchemaToValue<TSchema> | StandardOptionsReturn<TOptions>
 > & { readonly schema: TSchema } => {
+  if (intercept) {
+    try {
+      // tslint:disable-next-line: no-parameter-reassignment
+      inp = {
+        value: intercept(inp),
+        path: inp.path
+      };
+    } catch (err) {
+      return {
+        value: ValidationFail,
+        errors: [
+          {
+            path: inp.path,
+            message: err.message
+          }
+        ],
+        schema
+      };
+    }
+  }
+
   const emptyResult = checkEmpty(inp, options);
 
   if (emptyResult) {

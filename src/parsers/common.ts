@@ -1,7 +1,7 @@
 export type Parser<TValue> = (inp: ParserInput) => ParserResult<TValue>;
 
-export interface ParserInput {
-  readonly value: any;
+export interface ParserInput<T = any> {
+  readonly value: T;
   readonly path: ParserPath;
 }
 
