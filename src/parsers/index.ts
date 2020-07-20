@@ -10,3 +10,4 @@ export { ObjectParser } from './object';
 export { StringParser } from './string';
 export { TupleParser } from './tuple';
 export { UnionParser } from './union';
+export { RecordParser } from './record';
