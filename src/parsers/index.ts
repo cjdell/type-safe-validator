@@ -1,13 +1,13 @@
 export { ArrayParser } from './array';
 export { BooleanParser } from './boolean';
 export * from './common';
-export { Parser } from './common';
 export { CustomParser } from './custom';
+export { IntersectionParser } from './intersection';
 export { LiteralParser } from './literal';
 export { ModifierParser } from './modifier';
 export { NumberParser } from './number';
 export { ObjectParser } from './object';
+export { RecordParser } from './record';
 export { StringParser } from './string';
 export { TupleParser } from './tuple';
 export { UnionParser } from './union';
-export { RecordParser } from './record';
