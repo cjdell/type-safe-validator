@@ -55,10 +55,8 @@ export const UnionParser = <
 
         const literals: any[] = (literalResult as any).literals;
 
-        if (literals && literals.length === 1) {
-          const keyProp = literals[0];
-
-          if (objectKeyValue === keyProp) {
+        if (literals && literals.length > 0) {
+          if (literals.includes(objectKeyValue)) {
             errors.push(...parserResult.errors);
           }
         }
@@ -82,4 +80,4 @@ export const UnionParser = <
 
 type UnionSchemaToValue<
   TSchema extends ReadonlyArray<Parser<any>>
-> = ArrayElementType<TSchema> extends Parser<infer TValue> ? TValue : never;
+  > = ArrayElementType<TSchema> extends Parser<infer TValue> ? TValue : never;
