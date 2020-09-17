@@ -18,6 +18,22 @@ export const BooleanParser = <TOptions extends StandardOptions>(
     return emptyResult;
   }
 
+  // Allow stringified booleans
+  if (inp.value === 'true') {
+    return {
+      value: true,
+      errors: []
+    };
+  }
+
+  // Allow stringified booleans
+  if (inp.value === 'false') {
+    return {
+      value: false,
+      errors: []
+    };
+  }
+
   if (typeof inp.value !== 'boolean') {
     return {
       value: ValidationFail,

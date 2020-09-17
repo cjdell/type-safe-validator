@@ -80,4 +80,4 @@ export const UnionParser = <
 
 type UnionSchemaToValue<
   TSchema extends ReadonlyArray<Parser<any>>
-  > = ArrayElementType<TSchema> extends Parser<infer TValue> ? TValue : never;
+> = ArrayElementType<TSchema> extends Parser<infer TValue> ? TValue : never;
