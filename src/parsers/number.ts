@@ -9,6 +9,7 @@ import {
 
 interface NumberOptions extends StandardOptions {
   readonly allowNumeric?: boolean;
+  readonly fullNumberOnly?: boolean;
 }
 
 export const NumberParser = <TOptions extends NumberOptions>(
@@ -66,8 +67,9 @@ const handleNonNumber = (
     }
 
     const parsed = parseFloat(inp.value);
+    const isFull = (parsed + '') === inp.value
 
-    if (!isNaN(parsed)) {
+    if (!isNaN(parsed) && (!options.fullNumberOnly || isFull)) {
       return {
         value: parsed,
         errors: []
