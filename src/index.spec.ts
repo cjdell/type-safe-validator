@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { expectTypeOf } from 'expect-type';
 import {
   getValid,
   NumberParser,
@@ -40,9 +41,9 @@ describe('index', () => {
       }
 
       // Check schema conformance
-      const answer: Schema = result;
+      expectTypeOf(result).toMatchTypeOf<Schema>();
 
-      deepEqual(answer, { a: 1, b: null, c: 'foo' });
+      deepEqual(result, { a: 1, b: null, c: 'foo' });
       deepEqual(errors, []);
     });
 
@@ -125,9 +126,22 @@ describe('index', () => {
       }
 
       // Check schema conformance
-      const answer: Schema = result;
+      expectTypeOf(result).toMatchTypeOf<Schema>();
+      expectTypeOf(result).not.toMatchTypeOf<
+        Schema & {
+          readonly tuple: readonly [unknown, unknown];
+        }
+      >();
+      expectTypeOf(result).not.toMatchTypeOf<
+        Schema & {
+          readonly objectArray: readonly {
+            readonly a: number;
+            readonly b: boolean;
+          }[];
+        }
+      >();
 
-      deepEqual(answer, {
+      deepEqual(result, {
         num: 1,
         tuple: [1, 'thing', undefined],
         object: { a: 1, b: 'foo' },
