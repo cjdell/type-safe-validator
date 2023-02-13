@@ -27,15 +27,20 @@ export const StringParser = <TOptions extends StringOptions>(
   }
 
   if (typeof inp.value !== 'string') {
-    return {
-      value: ValidationFail,
-      errors: [
-        {
-          path: inp.path,
-          message: `Value "${inp.value}" is not a string`
-        }
-      ]
-    };
+    if (typeof inp.value === 'number' && options && options.allowNumeric) {
+      // tslint:disable-next-line: no-parameter-reassignment
+      inp = { value: inp.value.toString(), path: inp.path };
+    } else {
+      return {
+        value: ValidationFail,
+        errors: [
+          {
+            path: inp.path,
+            message: `Value "${inp.value}" is not a string`
+          }
+        ]
+      };
+    }
   }
 
   const errors: ValidationError[] = [];
